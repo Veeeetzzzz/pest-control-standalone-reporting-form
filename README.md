@@ -1,8 +1,12 @@
 # Pest Control Standalone Peporting Form
 
-This is being built in public, is provided as an open-source, community maintained alternative for a pest control reporting form/solution.
+Software-as-a-service has become an increasing cost for many local authorities with constant procurements or contract reviews with a view to cut down on expenditure whilst still providing statutory services against a national framework.
 
-A standalone form to submit Pest Control requests to our custom CRM, Dynamics 365 or Salesforce CRM.
+Most local authorities don't realise replacing one outsourced solution with another outsourced solution is only a temporary solution. It does not address the root cause.
+
+The solution is simplify the technical stack to enable quick standalone deployment that integrates into other enterprise solutions.
+
+This is being built in public, is provided as an open-source, community maintained alternative for a pest control reporting form/solution.
 
 Features:
 
