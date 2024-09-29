@@ -1,6 +1,6 @@
 # Pest Control Standalone Peporting Form
 
-Online demo: [TBC] | Local Development [TBD] | Pushing to Production [TBD]
+Online demo: [TBC] | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#local-development) | [Pushing to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#pushing-to-production)
 
 Software-as-a-service has become an increasing cost for many local authorities with constant procurements or contract reviews with a view to cut down on expenditure whilst still providing statutory services against a national framework.
 
