@@ -1,6 +1,12 @@
-# Pest Control Standalone Peporting Form
+# Pest Control Standalone Reporting Form
 
-Online demo: [TBC] | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#local-development) | [Pushing to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#pushing-to-production)
+Online demo: [TBC] | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#local-development) | [Deploying to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#pushing-to-production)
+
+One Click Deployments for Azure/Vercel
+
+<img src="https://aka.ms/deploytoazurebutton"/>  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form)
+
+
 
 Software-as-a-service has become an increasing cost for many local authorities with constant procurements or contract reviews with a view to cut down on expenditure whilst still providing statutory services against a national framework.
 
@@ -24,4 +30,11 @@ Screenshots:
 
 # Local Development
 
+- Download repository
+- Install requirements
+- Run npm dev, page refreshes as you update the file.
+
 # Pushing to Production
+
+- Self host on your on Azure/Vercel env with one click deployment
+- Use any host that supports Node.js which in 2024 is nearly every major web host
