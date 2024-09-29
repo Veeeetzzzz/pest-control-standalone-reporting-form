@@ -45,6 +45,7 @@ const PestControlForm: React.FC = () => {
     address: false,
     contact: false,
   });
+  const [currentStep, setCurrentStep] = useState<'select' | 'summary'>('select');
 
   useEffect(() => {
     // Simulating pre-populated data after login
@@ -101,6 +102,16 @@ const PestControlForm: React.FC = () => {
     console.log('Updated:', formData);
   };
 
+  const handleNext = () => {
+    setCurrentStep('summary');
+  };
+
+  const handleFinalSubmit = () => {
+    console.log('Final submission:', { ...formData, selectedPests });
+    // Here you would send the data to your backend
+    // After successful submission, you might want to show a confirmation message or redirect
+  };
+
   return (
     <>
       <Navbar bg="primary" variant="dark" expand="lg">
@@ -122,34 +133,63 @@ const PestControlForm: React.FC = () => {
       </Navbar>
 
       <Container className="mt-4">
-        <h1 className="mb-4">Report a pest problem {'>'} Pests</h1>
+        <h1 className="mb-4">Report a pest problem {'>'} {currentStep === 'select' ? 'Pests' : 'Summary'}</h1>
         <Row>
           <Col md={8}>
-            <Form onSubmit={handleSubmit}>
-              <h2>Select pests that you want our technicians to inspect inside the property</h2>
-              <p>You have added {selectedPests.length} pests</p>
-              <Row xs={2} md={3} className="g-4 mb-4">
-                {pests.map(pest => (
-                  <Col key={pest.id}>
-                    <Card
-                      className={`pest-card ${selectedPests.includes(pest.id) ? 'selected' : ''}`}
-                      onClick={() => handlePestSelection(pest.id)}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <Card.Body className="d-flex align-items-center">
-                        <div className="me-2 pest-checkbox">
-                          {selectedPests.includes(pest.id) && <span>✓</span>}
-                        </div>
-                        <span className="me-2">{pest.icon}</span>
-                        <span>{pest.name}</span>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-              <Button variant="primary" type="submit" className="w-100">Next</Button>
-            </Form>
+            {currentStep === 'select' ? (
+              <Form onSubmit={(e) => { e.preventDefault(); handleNext(); }}>
+                <h2>Select pests that you want our technicians to inspect inside the property</h2>
+                <p>You have added {selectedPests.length} pests</p>
+                <Row xs={2} md={3} className="g-4 mb-4">
+                  {pests.map(pest => (
+                    <Col key={pest.id}>
+                      <Card
+                        className={`pest-card ${selectedPests.includes(pest.id) ? 'selected' : ''}`}
+                        onClick={() => handlePestSelection(pest.id)}
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <Card.Body className="d-flex align-items-center">
+                          <div className="me-2 pest-checkbox">
+                            {selectedPests.includes(pest.id) && <span>✓</span>}
+                          </div>
+                          <span className="me-2">{pest.icon}</span>
+                          <span>{pest.name}</span>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+                <Button variant="primary" type="submit" className="w-100">Next</Button>
+              </Form>
+            ) : (
+              <Card>
+                <Card.Body>
+                  <h2>Summary of Your Pest Report</h2>
+                  <h5>Selected Pests:</h5>
+                  <ul>
+                    {selectedPests.map(pestId => (
+                      <li key={pestId}>{pests.find(p => p.id === pestId)?.name} {pests.find(p => p.id === pestId)?.icon}</li>
+                    ))}
+                  </ul>
+                  <h5>Address:</h5>
+                  <p>
+                    {formData.address.line1}<br />
+                    {formData.address.line2 && <>{formData.address.line2}<br /></>}
+                    {formData.address.city}<br />
+                    {formData.address.postcode}
+                  </p>
+                  <h5>Contact Details:</h5>
+                  <p>
+                    {formData.name}<br />
+                    {formData.email}<br />
+                    {formData.phone}
+                  </p>
+                  <Button variant="primary" onClick={handleFinalSubmit} className="w-100 mt-3">Submit Report</Button>
+                  <Button variant="secondary" onClick={() => setCurrentStep('select')} className="w-100 mt-2">Back to Selection</Button>
+                </Card.Body>
+              </Card>
+            )}
           </Col>
           <Col md={4}>
             <Card>
