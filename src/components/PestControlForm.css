@@ -1,0 +1,50 @@
+.pest-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  
+  .pest-card:hover, .pest-card:focus {
+    background-color: #f8f9fa;
+  }
+  
+  .pest-card.selected {
+    background-color: #e9ecef;
+    border-color: #0d6efd;
+  }
+  
+  .pest-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #0d6efd;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d6efd;
+    font-weight: bold;
+  }
+  
+  .pest-card:not(.selected) .pest-checkbox {
+    border-color: #ced4da;
+  }
+  
+  .pest-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  
+  .navbar-brand {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 1.5rem;
+  }
+  
+  footer a {
+    color: #6c757d;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
