@@ -6,8 +6,6 @@ One Click Deployments for Azure/Vercel
 
 <img src="https://aka.ms/deploytoazurebutton"/>  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form)
 
-
-
 Software-as-a-service has become an increasing cost for many local authorities with constant procurements or contract reviews with a view to cut down on expenditure whilst still providing statutory services against a national framework.
 
 Most local authorities don't realise replacing one outsourced solution with another outsourced solution is only a temporary solution. It does not address the root cause.
@@ -32,6 +30,7 @@ Screenshots:
 
 - Download repository
 - Install requirements
+- Update .env file with Dynamics/Salesforce API keys
 - Run npm dev, page refreshes as you update the file.
 
 # Pushing to Production
