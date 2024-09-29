@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert, Navbar, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PestControlForm.css';
+import axios from 'axios';
 
 interface Pest {
   id: string;
@@ -106,10 +107,26 @@ const PestControlForm: React.FC = () => {
     setCurrentStep('summary');
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     console.log('Final submission:', { ...formData, selectedPests });
-    // Here you would send the data to your backend
-    // After successful submission, you might want to show a confirmation message or redirect
+    
+    try {
+      const submissionData = {
+        ...formData,
+        selectedPests,
+      };
+
+      const dynamicsResponse = await axios.post('http://localhost:5000/api/submit-to-dynamics', submissionData);
+      console.log('Dynamics submission successful:', dynamicsResponse.data);
+
+      const salesforceResponse = await axios.post('http://localhost:5000/api/submit-to-salesforce', submissionData);
+      console.log('Salesforce submission successful:', salesforceResponse.data);
+
+      alert('Your pest control report has been successfully submitted!');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting your report. Please try again later.');
+    }
   };
 
   return (
