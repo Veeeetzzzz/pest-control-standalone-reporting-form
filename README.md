@@ -20,4 +20,5 @@ Features:
 
 Screenshots:
 
-![image](https://github.com/user-attachments/assets/b8ba5eea-342b-4db2-abed-a86e61656ddf)
+![image](https://github.com/user-attachments/assets/06035e57-bd2a-4229-a521-a56bf62bbc39)
+
