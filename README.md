@@ -8,15 +8,11 @@ The solution is simplify the technical stack to enable quick standalone deployme
 
 This is being built in public, is provided as an open-source, community maintained alternative for a pest control reporting form/solution.
 
-Features:
+Features
 
-- Sign in with custom/standalone authentication, use Microsoft Single Sign On with Dynamics or Salesforce CRM
-
-- Retreive user details from authetnication platform and prepopulate form
-
-- Two way integration for Dynamics 365, Salesforce
-
-- Optionally use our custom CRM to keep everything in one stack
+- Single Sign On for Microsoft Entra
+- Directly submit records to Dynamics 365 or Salesforce CRM endpoint
+- Populate form with existing customer details from Microsoft Dynamics or Salesforce CRM
 
 Screenshots:
 
