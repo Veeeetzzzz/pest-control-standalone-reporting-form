@@ -3,6 +3,9 @@ import { Container, Row, Col, Form, Button, Card, Alert, Navbar, Nav } from 'rea
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PestControlForm.css';
 import axios from 'axios';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from './authConfig';
+import SignIn from './SignIn';
 
 interface Pest {
   id: string;
@@ -29,6 +32,7 @@ const pests: Pest[] = [
 ];
 
 const PestControlForm: React.FC = () => {
+  const { instance, accounts } = useMsal();
   const [selectedPests, setSelectedPests] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -41,7 +45,6 @@ const PestControlForm: React.FC = () => {
       postcode: '',
     },
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isEditing, setIsEditing] = useState({
     address: false,
     contact: false,
@@ -49,21 +52,28 @@ const PestControlForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<'select' | 'summary'>('select');
 
   useEffect(() => {
-    // Simulating pre-populated data after login
-    if (isLoggedIn) {
-      setFormData({
-        name: 'Mr Dan Smith',
-        email: 'dsmith@email.com',
-        phone: '01234567890',
-        address: {
-          line1: '21-23 BOURNEMOUTH ROAD',
-          line2: '',
-          city: 'LONDON',
-          postcode: 'SE15 4UJ',
-        },
+    if (accounts.length > 0) {
+      instance.acquireTokenSilent({
+        ...loginRequest,
+        account: accounts[0]
+      }).then((response) => {
+        // Use the access token to call Microsoft Graph API
+        fetch('https://graph.microsoft.com/v1.0/me', {
+          headers: {
+            Authorization: `Bearer ${response.accessToken}`
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          setFormData(prev => ({
+            ...prev,
+            name: data.displayName,
+            email: data.mail || data.userPrincipalName,
+          }));
+        });
       });
     }
-  }, [isLoggedIn]);
+  }, [instance, accounts]);
 
   const handlePestSelection = (pestId: string) => {
     setSelectedPests(prev => 
@@ -86,11 +96,6 @@ const PestControlForm: React.FC = () => {
     e.preventDefault();
     console.log('Submitted:', { ...formData, selectedPests });
     // Here you would send the data to your backend
-  };
-
-  const handleLogin = () => {
-    // Simulating login process
-    setIsLoggedIn(true);
   };
 
   const handleEdit = (section: 'address' | 'contact') => {
@@ -140,8 +145,8 @@ const PestControlForm: React.FC = () => {
               <Nav.Link href="#home">Home</Nav.Link>
               <Nav.Link href="#services">Services</Nav.Link>
             </Nav>
-            {!isLoggedIn ? (
-              <Button variant="outline-light" onClick={handleLogin}>Sign In</Button>
+            {accounts.length === 0 ? (
+              <SignIn />
             ) : (
               <Navbar.Text>Signed in as: {formData.name}</Navbar.Text>
             )}
