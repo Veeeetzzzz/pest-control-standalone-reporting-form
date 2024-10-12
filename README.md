@@ -28,12 +28,12 @@ Screenshots:
 
 # Local Development
 
-- Download repository
-- Install requirements
+- Download repository git clone [this repo](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main)
+- Install requirements    ```npm install```    
 - Update .env file with Dynamics/Salesforce API keys
-- Run npm dev, page refreshes as you update the file.
+- Run ```npm dev``` to start the dev server. The page refreshes as you update/save the file.
 
 # Pushing to Production
 
+- Use any host that supports Next.js
 - Self host on your on Azure/Vercel env with one click deployment
-- Use any host that supports Node.js which in 2024 is nearly every major web host
