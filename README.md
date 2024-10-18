@@ -1,6 +1,6 @@
 # Pest Control Standalone Reporting Form
 
-[Online demo](https://pest-control-standalone-reporting-form.vercel.app) | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#local-development) | [Deploying to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#pushing-to-production)
+[Online demo](https://pest-control-standalone-reporting-form.vercel.app) | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file##local-development) | [Deploying to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file##pushing-to-production)
 
 ## One Click Deployments for Azure/Vercel
 
@@ -14,11 +14,19 @@ The solution is simplify the technical stack to enable quick standalone deployme
 
 This is being built in public, is provided as an open-source, community maintained alternative for a pest control reporting form/solution.
 
-Features
+### Features
 
 - Single Sign On for Microsoft Entra
 - Directly submit records to Dynamics 365 or Salesforce CRM endpoint
 - Populate form with existing customer details from Microsoft Dynamics or Salesforce CRM
+
+### Roadmap
+
+- Severity assessment
+- Photo upload capability
+- Data export/import functionality (CSV, JSON)
+- Location reporting (address, GPS coordinates)
+- API development for easy integration with existing systems
 
 Screenshots:
 
