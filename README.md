@@ -2,7 +2,7 @@
 
 [Online demo](https://pest-control-standalone-reporting-form.vercel.app) | [Local Development](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#local-development) | [Deploying to Production](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main?tab=readme-ov-file#pushing-to-production)
 
-One Click Deployments for Azure/Vercel
+## One Click Deployments for Azure/Vercel
 
 <img src="https://aka.ms/deploytoazurebutton"/>  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form)
 
@@ -26,14 +26,15 @@ Screenshots:
 
 ![image](https://github.com/user-attachments/assets/0bcf0878-c2d1-42f4-b353-e12fa36bea12)
 
-# Local Development
+## Local Development - Get started in 5 steps.
 
-- Download repository git clone [this repo](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/tree/main)
+- Download repository ```git clone https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form```
+- ```cd pest-control-standalone-reporting-form ```
 - Install requirements    ```npm install```    
 - Update .env file with Dynamics/Salesforce API keys
-- Run ```npm dev``` to start the dev server. The page refreshes as you update/save the file.
+- Run ```npm run dev``` to start the dev server. The page refreshes as you update/save the file.
 
-# Pushing to Production
+## Pushing to Production 
 
 - Use any host that supports Next.js
-- Self host on your on Azure/Vercel env with one click deployment
+- Self host on your on Azure/Vercel env with [one click deployment](https://github.com/Veeeetzzzz/pest-control-standalone-reporting-form/edit/main/README.md#one-click-deployments-for-azurevercel)
