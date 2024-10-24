@@ -44,6 +44,7 @@ const PestControlForm: React.FC = () => {
       city: '',
       postcode: '',
     },
+    photo: null as File | null,
   });
   const [isEditing, setIsEditing] = useState({
     address: false,
@@ -82,11 +83,14 @@ const PestControlForm: React.FC = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData(prev => {
       if (name.startsWith('address.')) {
         const addressField = name.split('.')[1];
         return { ...prev, address: { ...prev.address, [addressField]: value } };
+      }
+      if (name === 'photo' && files) {
+        return { ...prev, photo: files[0] };
       }
       return { ...prev, [name]: value };
     });
@@ -116,15 +120,31 @@ const PestControlForm: React.FC = () => {
     console.log('Final submission:', { ...formData, selectedPests });
     
     try {
-      const submissionData = {
-        ...formData,
-        selectedPests,
-      };
+      const submissionData = new FormData();
+      submissionData.append('name', formData.name);
+      submissionData.append('email', formData.email);
+      submissionData.append('phone', formData.phone);
+      submissionData.append('address[line1]', formData.address.line1);
+      submissionData.append('address[line2]', formData.address.line2);
+      submissionData.append('address[city]', formData.address.city);
+      submissionData.append('address[postcode]', formData.address.postcode);
+      submissionData.append('selectedPests', JSON.stringify(selectedPests));
+      if (formData.photo) {
+        submissionData.append('photo', formData.photo);
+      }
 
-      const dynamicsResponse = await axios.post('http://localhost:5000/api/submit-to-dynamics', submissionData);
+      const dynamicsResponse = await axios.post('http://localhost:5000/api/submit-to-dynamics', submissionData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       console.log('Dynamics submission successful:', dynamicsResponse.data);
 
-      const salesforceResponse = await axios.post('http://localhost:5000/api/submit-to-salesforce', submissionData);
+      const salesforceResponse = await axios.post('http://localhost:5000/api/submit-to-salesforce', submissionData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       console.log('Salesforce submission successful:', salesforceResponse.data);
 
       alert('Your pest control report has been successfully submitted!');
@@ -136,156 +156,72 @@ const PestControlForm: React.FC = () => {
 
   return (
     <>
-      <Navbar bg="primary" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand href="#home">A Local Authority</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#services">Services</Nav.Link>
-            </Nav>
-            {accounts.length === 0 ? (
-              <SignIn />
-            ) : (
-              <Navbar.Text>Signed in as: {formData.name}</Navbar.Text>
-            )}
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
       <Container className="mt-4">
-        <h1 className="mb-4">Report a pest problem {'>'} {currentStep === 'select' ? 'Pests' : 'Summary'}</h1>
-        <Row>
-          <Col md={8}>
-            {currentStep === 'select' ? (
-              <Form onSubmit={(e) => { e.preventDefault(); handleNext(); }}>
-                <h2>Select pests that you want our technicians to inspect inside the property</h2>
-                <p>You have added {selectedPests.length} pests</p>
-                <Row xs={2} md={3} className="g-4 mb-4">
-                  {pests.map(pest => (
-                    <Col key={pest.id}>
-                      <Card
-                        className={`pest-card ${selectedPests.includes(pest.id) ? 'selected' : ''}`}
-                        onClick={() => handlePestSelection(pest.id)}
-                        role="button"
-                        tabIndex={0}
-                      >
-                        <Card.Body className="d-flex align-items-center">
-                          <div className="me-2 pest-checkbox">
-                            {selectedPests.includes(pest.id) && <span>✓</span>}
-                          </div>
-                          <span className="me-2">{pest.icon}</span>
-                          <span>{pest.name}</span>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-                <Button variant="primary" type="submit" className="w-100">Next</Button>
-              </Form>
-            ) : (
-              <Card>
-                <Card.Body>
-                  <h2>Summary of Your Pest Report</h2>
-                  <h5>Selected Pests:</h5>
-                  <ul>
-                    {selectedPests.map(pestId => (
-                      <li key={pestId}>{pests.find(p => p.id === pestId)?.name} {pests.find(p => p.id === pestId)?.icon}</li>
-                    ))}
-                  </ul>
-                  <h5>Address:</h5>
-                  <p>
-                    {formData.address.line1}<br />
-                    {formData.address.line2 && <>{formData.address.line2}<br /></>}
-                    {formData.address.city}<br />
-                    {formData.address.postcode}
-                  </p>
-                  <h5>Contact Details:</h5>
-                  <p>
-                    {formData.name}<br />
-                    {formData.email}<br />
-                    {formData.phone}
-                  </p>
-                  <Button variant="primary" onClick={handleFinalSubmit} className="w-100 mt-3">Submit Report</Button>
-                  <Button variant="secondary" onClick={() => setCurrentStep('select')} className="w-100 mt-2">Back to Selection</Button>
-                </Card.Body>
-              </Card>
-            )}
-          </Col>
-          <Col md={4}>
-            <Card>
-              <Card.Header>Your booking</Card.Header>
-              <Card.Body>
-                <h5>Address</h5>
-                {isEditing.address ? (
-                  <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" name="address.line1" value={formData.address.line1} onChange={handleInputChange} placeholder="Address Line 1" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" name="address.line2" value={formData.address.line2} onChange={handleInputChange} placeholder="Address Line 2" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" name="address.city" value={formData.address.city} onChange={handleInputChange} placeholder="City" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" name="address.postcode" value={formData.address.postcode} onChange={handleInputChange} placeholder="Postcode" />
-                    </Form.Group>
-                    <Button variant="primary" onClick={() => handleSave('address')} className="w-100 mb-3">Save</Button>
-                  </Form>
-                ) : (
-                  <>
-                    <p>{formData.address.line1}<br />
-                       {formData.address.line2}<br />
-                       {formData.address.city}<br />
-                       {formData.address.postcode}</p>
-                    <Button variant="light" onClick={() => handleEdit('address')} className="w-100 mb-3">EDIT</Button>
-                  </>
-                )}
-
-                <h5>Contact details</h5>
-                {isEditing.contact ? (
-                  <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Name" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Control type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" />
-                    </Form.Group>
-                    <Button variant="primary" onClick={() => handleSave('contact')} className="w-100 mb-3">Save</Button>
-                  </Form>
-                ) : (
-                  <>
-                    <p>{formData.name}<br />{formData.email}<br />{formData.phone}</p>
-                    <Button variant="light" onClick={() => handleEdit('contact')} className="w-100 mb-3">EDIT</Button>
-                  </>
-                )}
-
-                <Button variant="secondary" className="w-100">CLEAR</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+        {currentStep === 'select' ? (
+          <Form onSubmit={(e) => { e.preventDefault(); handleNext(); }}>
+            <h2>Select pests that you want our technicians to inspect inside the property</h2>
+            <p>You have added {selectedPests.length} pests</p>
+            <Row xs={2} md={3} className="g-4 mb-4">
+              {pests.map(pest => (
+                <Col key={pest.id}>
+                  <Card
+                    className={`pest-card ${selectedPests.includes(pest.id) ? 'selected' : ''}`}
+                    onClick={() => handlePestSelection(pest.id)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <Card.Body className="d-flex align-items-center">
+                      <div className="me-2 pest-checkbox">
+                        {selectedPests.includes(pest.id) && <span>✓</span>}
+                      </div>
+                      <span className="me-2">{pest.icon}</span>
+                      <span>{pest.name}</span>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            <Form.Group className="mb-4">
+              <Form.Label>Upload a photo (optional)</Form.Label>
+              <Form.Control type="file" name="photo" onChange={handleInputChange} />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100">Next</Button>
+          </Form>
+        ) : (
+          <Card>
+            <Card.Body>
+              <h2>Summary of Your Pest Report</h2>
+              <h5>Selected Pests:</h5>
+              <ul>
+                {selectedPests.map(pestId => (
+                  <li key={pestId}>{pests.find(p => p.id === pestId)?.name} {pests.find(p => p.id === pestId)?.icon}</li>
+                ))}
+              </ul>
+              <h5>Address:</h5>
+              <p>
+                {formData.address.line1}<br />
+                {formData.address.line2 && <>{formData.address.line2}<br /></>}
+                {formData.address.city}<br />
+                {formData.address.postcode}
+              </p>
+              <h5>Contact Details:</h5>
+              <p>
+                {formData.name}<br />
+                {formData.email}<br />
+                {formData.phone}
+              </p>
+              {formData.photo && (
+                <div>
+                  <h5>Uploaded Photo:</h5>
+                  <img src={URL.createObjectURL(formData.photo)} alt="Uploaded Pest" style={{ maxWidth: '100%' }} />
+                </div>
+              )}
+              <Button variant="primary" onClick={handleFinalSubmit} className="w-100 mt-3">Submit Report</Button>
+              <Button variant="secondary" onClick={() => setCurrentStep('select')} className="w-100 mt-2">Back to Selection</Button>
+            </Card.Body>
+          </Card>
+        )}
       </Container>
-
-      <footer className="mt-5 bg-light py-3">
-        <Container>
-          <Row>
-            <Col>
-              <a href="#" className="me-3">Terms and disclaimer</a>
-              <a href="#" className="me-3">Emergency contacts</a>
-              <a href="#" className="me-3">Feedback and complaints</a>
-              <a href="#" className="me-3">Modern Slavery Statement</a>
-              <a href="#" className="me-3">Complete saved eform</a>
-              <a href="#" className="me-3">Accessibility statement</a>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
     </>
   );
 };
