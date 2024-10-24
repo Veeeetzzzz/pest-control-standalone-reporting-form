@@ -23,10 +23,9 @@ This is being built in public, is provided as an open-source, community maintain
 
 ### Roadmap
 
-- Severity assessment
-- Photo upload capability
-- Data export/import functionality (CSV, JSON)
-- Location reporting (address, GPS coordinates)
+- Photo upload capability tick ✅
+- Risk assessment form based on BCPA guidance
+- Record export/import functionality (CSV, XLS)
 - API development for easy integration with existing systems
 
 Screenshots:
