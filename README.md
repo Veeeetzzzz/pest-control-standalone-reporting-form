@@ -26,8 +26,8 @@ This is being built in public, is provided as an open-source, community maintain
 Key: ✅ Done | 🟢 In Progress | 🟠 Planned
 
 - Photo upload capability ✅
-- Risk assessment form based on BCPA guidance 🟢
-- Record export/import functionality (CSV, XLS) 🟠
+- Risk assessment form based on BCPA guidance 🟠
+- Record export/import functionality (CSV, XLS) 🟢
 - API development for easy integration with existing systems 🟠
 
 Screenshots:
