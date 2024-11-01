@@ -50,6 +50,7 @@ const PestControlForm: React.FC = () => {
     contact: false,
   });
   const [currentStep, setCurrentStep] = useState<'select' | 'summary'>('select');
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (accounts.length > 0) {
@@ -112,17 +113,33 @@ const PestControlForm: React.FC = () => {
     setCurrentStep('summary');
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setUploadedFiles(filesArray);
+    }
+  };
+
   const handleFinalSubmit = async () => {
-    console.log('Final submission:', { ...formData, selectedPests });
+    console.log('Final submission:', { ...formData, selectedPests, uploadedFiles });
 
     try {
-      const submissionData = {
-        ...formData,
-        selectedPests,
-        address: JSON.stringify(formData.address), // Convert address object to string
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('address', JSON.stringify(formData.address));
+      formDataToSend.append('selectedPests', JSON.stringify(selectedPests));
+      
+      uploadedFiles.forEach(file => {
+        formDataToSend.append('photos', file);
+      });
 
-      const response = await axios.post('http://localhost:5000/api/submit-appointment', submissionData);
+      const response = await axios.post('http://localhost:5000/api/submit-appointment', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log('Appointment submission successful:', response.data);
 
       alert('Your pest control report has been successfully submitted!');
@@ -180,6 +197,10 @@ const PestControlForm: React.FC = () => {
                     </Col>
                   ))}
                 </Row>
+                <Form.Group className="mb-3">
+                  <Form.Label>Upload Photos</Form.Label>
+                  <Form.Control type="file" multiple onChange={handleFileChange} />
+                </Form.Group>
                 <Button variant="primary" type="submit" className="w-100">Next</Button>
               </Form>
             ) : (
@@ -205,6 +226,12 @@ const PestControlForm: React.FC = () => {
                     {formData.email}<br />
                     {formData.phone}
                   </p>
+                  <h5>Uploaded Photos:</h5>
+                  <ul>
+                    {uploadedFiles.map((file, index) => (
+                      <li key={index}>{file.name}</li>
+                    ))}
+                  </ul>
                   <Button variant="primary" onClick={handleFinalSubmit} className="w-100 mt-3">Submit Report</Button>
                   <Button variant="secondary" onClick={() => setCurrentStep('select')} className="w-100 mt-2">Back to Selection</Button>
                 </Card.Body>
