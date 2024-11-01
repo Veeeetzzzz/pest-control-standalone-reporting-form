@@ -44,7 +44,6 @@ const PestControlForm: React.FC = () => {
       city: '',
       postcode: '',
     },
-    photo: null as File | null,
   });
   const [isEditing, setIsEditing] = useState({
     address: false,
@@ -83,14 +82,11 @@ const PestControlForm: React.FC = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => {
       if (name.startsWith('address.')) {
         const addressField = name.split('.')[1];
         return { ...prev, address: { ...prev.address, [addressField]: value } };
-      }
-      if (name === 'photo' && files) {
-        return { ...prev, photo: files[0] };
       }
       return { ...prev, [name]: value };
     });
@@ -118,34 +114,16 @@ const PestControlForm: React.FC = () => {
 
   const handleFinalSubmit = async () => {
     console.log('Final submission:', { ...formData, selectedPests });
-    
+
     try {
-      const submissionData = new FormData();
-      submissionData.append('name', formData.name);
-      submissionData.append('email', formData.email);
-      submissionData.append('phone', formData.phone);
-      submissionData.append('address[line1]', formData.address.line1);
-      submissionData.append('address[line2]', formData.address.line2);
-      submissionData.append('address[city]', formData.address.city);
-      submissionData.append('address[postcode]', formData.address.postcode);
-      submissionData.append('selectedPests', JSON.stringify(selectedPests));
-      if (formData.photo) {
-        submissionData.append('photo', formData.photo);
-      }
+      const submissionData = {
+        ...formData,
+        selectedPests,
+        address: JSON.stringify(formData.address), // Convert address object to string
+      };
 
-      const dynamicsResponse = await axios.post('http://localhost:5000/api/submit-to-dynamics', submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      console.log('Dynamics submission successful:', dynamicsResponse.data);
-
-      const salesforceResponse = await axios.post('http://localhost:5000/api/submit-to-salesforce', submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      console.log('Salesforce submission successful:', salesforceResponse.data);
+      const response = await axios.post('http://localhost:5000/api/submit-appointment', submissionData);
+      console.log('Appointment submission successful:', response.data);
 
       alert('Your pest control report has been successfully submitted!');
     } catch (error) {
@@ -202,10 +180,6 @@ const PestControlForm: React.FC = () => {
                     </Col>
                   ))}
                 </Row>
-                <Form.Group className="mb-4">
-                  <Form.Label>Upload a photo (optional)</Form.Label>
-                  <Form.Control type="file" name="photo" onChange={handleInputChange} />
-                </Form.Group>
                 <Button variant="primary" type="submit" className="w-100">Next</Button>
               </Form>
             ) : (
@@ -231,12 +205,6 @@ const PestControlForm: React.FC = () => {
                     {formData.email}<br />
                     {formData.phone}
                   </p>
-                  {formData.photo && (
-                    <div>
-                      <h5>Uploaded Photo:</h5>
-                      <img src={URL.createObjectURL(formData.photo)} alt="Uploaded Pest" style={{ maxWidth: '100%' }} />
-                    </div>
-                  )}
                   <Button variant="primary" onClick={handleFinalSubmit} className="w-100 mt-3">Submit Report</Button>
                   <Button variant="secondary" onClick={() => setCurrentStep('select')} className="w-100 mt-2">Back to Selection</Button>
                 </Card.Body>
